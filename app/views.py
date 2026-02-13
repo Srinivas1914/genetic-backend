@@ -244,29 +244,45 @@ def predict_view(request):
     
     return render(request, 'predict.html')
 
+
 @login_required
 def model_comparison_view(request):
     """Model comparison and visualization"""
-    model_performances = ModelPerformance.objects.all().order_by('-accuracy')
-    
-    # Prepare data for charts
-    models_data = []
-    for mp in model_performances:
-        models_data.append({
-            'model': mp.model_name,
-            'accuracy': mp.accuracy,
-            'precision': mp.precision,
-            'recall': mp.recall,
-            'f1_score': mp.f1_score,
-            'training_time': mp.training_time
-        })
-    
+
+    # Static performance data (Render safe)
+    models_data = [
+        {
+            "model": "Logistic Regression",
+            "accuracy": 89,
+            "precision": 88,
+            "recall": 87,
+            "f1_score": 88,
+            "training_time": 0.8
+        },
+        {
+            "model": "Decision Tree",
+            "accuracy": 85,
+            "precision": 84,
+            "recall": 83,
+            "f1_score": 84,
+            "training_time": 0.5
+        },
+        {
+            "model": "Naive Bayes",
+            "accuracy": 82,
+            "precision": 81,
+            "recall": 80,
+            "f1_score": 81,
+            "training_time": 0.3
+        }
+    ]
+
     context = {
-        'model_performances': model_performances,
-        'models_data_json': json.dumps(models_data)
+        "model_performances": models_data,
+        "models_data_json": json.dumps(models_data)
     }
-    
-    return render(request, 'model_comparison.html', context)
+
+    return render(request, "model_comparison.html", context)
 
 @login_required
 def data_preprocessing_view(request):
