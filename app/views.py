@@ -200,26 +200,7 @@ def predict_view(request):
                 except Exception as e:
                     print(f"Error with {model_name}: {e}")
             
-            # Load deep learning models
            
-            
-            for model_name, file_name in dl_models.items():
-                try:
-                    model = keras.models.load_model(f'app/ml_models/{file_name}')
-                    
-                    if model_name in ['CNN', 'RNN-LSTM']:
-                        input_reshaped = input_scaled.reshape(1, input_scaled.shape[1], 1)
-                        prob = model.predict(input_reshaped, verbose=0)[0][0]
-                    else:
-                        prob = model.predict(input_scaled, verbose=0)[0][0]
-                    
-                    pred = 1 if prob > 0.5 else 0
-                    predictions[model_name] = {
-                        'prediction': int(pred),
-                        'confidence': float(prob * 100 if pred == 1 else (1 - prob) * 100)
-                    }
-                except Exception as e:
-                    print(f"Error with {model_name}: {e}")
             
             # Calculate ensemble prediction
             pred_values = [p['prediction'] for p in predictions.values()]
