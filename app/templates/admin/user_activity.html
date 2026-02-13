@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}User Activity - Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="content-wrapper fade-in">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="display-4 fw-bold text-danger">
+                    <i class="fas fa-list"></i> User Activity Logs
+                </h1>
+                <p class="lead text-muted">Monitor all user activities</p>
+            </div>
+        </div>
+        
+        <div class="row mb-4">
+            <div class="col-12">
+                <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary btn-lg">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0"><i class="fas fa-history"></i> Activity History (Last 100 entries)</h4>
+            </div>
+            <div class="card-body">
+                {% if activities %}
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>User</th>
+                                <th>Activity Type</th>
+                                <th>Description</th>
+                                <th>IP Address</th>
+                                <th>Timestamp</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for activity in activities %}
+                            <tr>
+                                <td>{{ activity.id }}</td>
+                                <td><strong>{{ activity.user.username }}</strong></td>
+                                <td>
+                                    <span class="badge 
+                                        {% if activity.activity_type == 'LOGIN' %}bg-success
+                                        {% elif activity.activity_type == 'LOGOUT' %}bg-secondary
+                                        {% elif activity.activity_type == 'PREDICTION' %}bg-primary
+                                        {% elif activity.activity_type == 'REGISTRATION' %}bg-info
+                                        {% elif activity.activity_type == 'PROFILE_UPDATE' %}bg-warning
+                                        {% else %}bg-dark
+                                        {% endif %}">
+                                        {{ activity.activity_type }}
+                                    </span>
+                                </td>
+                                <td>{{ activity.description }}</td>
+                                <td><code>{{ activity.ip_address }}</code></td>
+                                <td>{{ activity.timestamp|date:"M d, Y H:i:s" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> No activity logs available
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

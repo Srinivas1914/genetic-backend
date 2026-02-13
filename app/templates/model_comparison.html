@@ -1,0 +1,360 @@
+{% extends 'base.html' %}
+{% block title %}Model Comparison - Genetic Disorder Prediction{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="content-wrapper fade-in">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="display-4 fw-bold">
+                    <i class="fas fa-chart-bar"></i> ML/DL Model Comparison
+                </h1>
+                <p class="lead text-muted">Comprehensive performance analysis of all models</p>
+            </div>
+        </div>
+        
+        <!-- Performance Table -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0"><i class="fas fa-table"></i> Model Performance Metrics</h4>
+                    </div>
+                    <div class="card-body">
+                        {% if model_performances %}
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Model Name</th>
+                                        <th>Accuracy (%)</th>
+                                        <th>Precision (%)</th>
+                                        <th>Recall (%)</th>
+                                        <th>F1-Score (%)</th>
+                                        <th>Training Time (s)</th>
+                                        <th>Last Trained</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for model in model_performances %}
+                                    <tr>
+                                        <td class="text-center">
+                                            {% if forloop.counter == 1 %}
+                                            <span class="badge bg-warning"><i class="fas fa-trophy"></i> #{{ forloop.counter }}</span>
+                                            {% elif forloop.counter == 2 %}
+                                            <span class="badge bg-secondary">#{{ forloop.counter }}</span>
+                                            {% elif forloop.counter == 3 %}
+                                            <span class="badge bg-secondary">#{{ forloop.counter }}</span>
+                                            {% else %}
+                                            <span class="badge bg-light text-dark">#{{ forloop.counter }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td><strong>{{ model.model_name }}</strong></td>
+                                        <td>
+                                            <span class="model-accuracy-badge {% if model.accuracy >= 95 %}accuracy-high{% elif model.accuracy >= 85 %}accuracy-medium{% else %}accuracy-low{% endif %}">
+                                                {{ model.accuracy|floatformat:2 }}%
+                                            </span>
+                                        </td>
+                                        <td>{{ model.precision|floatformat:2 }}%</td>
+                                        <td>{{ model.recall|floatformat:2 }}%</td>
+                                        <td>{{ model.f1_score|floatformat:2 }}%</td>
+                                        <td>{{ model.training_time|floatformat:2 }}s</td>
+                                        <td>{{ model.last_trained|date:"M d, Y H:i" }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i> No model performance data available. Please train the models first.
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Visualization Charts -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="fas fa-chart-bar"></i> Accuracy Comparison</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="accuracyChart" style="height: 400px;"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="fas fa-chart-line"></i> All Metrics Comparison</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="metricsChart" style="height: 400px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0"><i class="fas fa-chart-pie"></i> Performance Distribution</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="pieChart" style="height: 400px;"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="mb-0"><i class="fas fa-clock"></i> Training Time Comparison</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="timeChart" style="height: 400px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Model Categories -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-robot"></i> Traditional ML Models</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            {% for model in model_performances %}
+                            {% if "Neural Network" not in model.model_name and "CNN" not in model.model_name and "RNN" not in model.model_name %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ model.model_name }}
+                                <span class="badge {% if model.accuracy >= 95 %}bg-success{% elif model.accuracy >= 85 %}bg-warning{% else %}bg-danger{% endif %} rounded-pill">
+                                    {{ model.accuracy|floatformat:2 }}%
+                                </span>
+                            </li>
+                            {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="fas fa-brain"></i> Deep Learning Models</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            {% for model in model_performances %}
+                            {% if "Neural Network" in model.model_name or "CNN" in model.model_name or "RNN" in model.model_name %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ model.model_name }}
+                                <span class="badge {% if model.accuracy >= 95 %}bg-success{% elif model.accuracy >= 85 %}bg-warning{% else %}bg-danger{% endif %} rounded-pill">
+                                    {{ model.accuracy|floatformat:2 }}%
+                                </span>
+                            </li>
+                            {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Prepare data from Django template
+const modelsData = {{ models_data_json|safe }};
+
+// Accuracy Comparison Chart
+const ctxAccuracy = document.getElementById('accuracyChart').getContext('2d');
+new Chart(ctxAccuracy, {
+    type: 'bar',
+    data: {
+        labels: modelsData.map(m => m.model),
+        datasets: [{
+            label: 'Accuracy (%)',
+            data: modelsData.map(m => m.accuracy),
+            backgroundColor: modelsData.map(m => 
+                m.accuracy >= 95 ? 'rgba(80, 200, 120, 0.7)' :
+                m.accuracy >= 85 ? 'rgba(255, 165, 0, 0.7)' :
+                'rgba(231, 76, 60, 0.7)'
+            ),
+            borderColor: modelsData.map(m => 
+                m.accuracy >= 95 ? 'rgba(80, 200, 120, 1)' :
+                m.accuracy >= 85 ? 'rgba(255, 165, 0, 1)' :
+                'rgba(231, 76, 60, 1)'
+            ),
+            borderWidth: 2
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 100,
+                title: {
+                    display: true,
+                    text: 'Accuracy (%)'
+                }
+            },
+            x: {
+                ticks: {
+                    maxRotation: 45,
+                    minRotation: 45
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: false
+            }
+        }
+    }
+});
+
+// All Metrics Comparison Chart
+const ctxMetrics = document.getElementById('metricsChart').getContext('2d');
+new Chart(ctxMetrics, {
+    type: 'line',
+    data: {
+        labels: modelsData.map(m => m.model),
+        datasets: [
+            {
+                label: 'Accuracy',
+                data: modelsData.map(m => m.accuracy),
+                borderColor: 'rgb(102, 126, 234)',
+                backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                tension: 0.4
+            },
+            {
+                label: 'Precision',
+                data: modelsData.map(m => m.precision),
+                borderColor: 'rgb(80, 200, 120)',
+                backgroundColor: 'rgba(80, 200, 120, 0.1)',
+                tension: 0.4
+            },
+            {
+                label: 'Recall',
+                data: modelsData.map(m => m.recall),
+                borderColor: 'rgb(255, 165, 0)',
+                backgroundColor: 'rgba(255, 165, 0, 0.1)',
+                tension: 0.4
+            },
+            {
+                label: 'F1-Score',
+                data: modelsData.map(m => m.f1_score),
+                borderColor: 'rgb(231, 76, 60)',
+                backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                tension: 0.4
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 100
+            },
+            x: {
+                ticks: {
+                    maxRotation: 45,
+                    minRotation: 45
+                }
+            }
+        }
+    }
+});
+
+// Pie Chart - Top 5 Models
+const ctxPie = document.getElementById('pieChart').getContext('2d');
+const top5Models = modelsData.slice(0, 5);
+new Chart(ctxPie, {
+    type: 'doughnut',
+    data: {
+        labels: top5Models.map(m => m.model),
+        datasets: [{
+            data: top5Models.map(m => m.accuracy),
+            backgroundColor: [
+                'rgba(102, 126, 234, 0.7)',
+                'rgba(80, 200, 120, 0.7)',
+                'rgba(255, 165, 0, 0.7)',
+                'rgba(231, 76, 60, 0.7)',
+                'rgba(155, 89, 182, 0.7)'
+            ],
+            borderWidth: 2
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            },
+            title: {
+                display: true,
+                text: 'Top 5 Models by Accuracy'
+            }
+        }
+    }
+});
+
+// Training Time Chart
+const ctxTime = document.getElementById('timeChart').getContext('2d');
+new Chart(ctxTime, {
+    type: 'bar',
+    data: {
+        labels: modelsData.map(m => m.model),
+        datasets: [{
+            label: 'Training Time (seconds)',
+            data: modelsData.map(m => m.training_time),
+            backgroundColor: 'rgba(231, 76, 60, 0.7)',
+            borderColor: 'rgba(231, 76, 60, 1)',
+            borderWidth: 2
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Time (seconds)'
+                }
+            },
+            x: {
+                ticks: {
+                    maxRotation: 45,
+                    minRotation: 45
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: false
+            }
+        }
+    }
+});
+</script>
+
+{% endblock %}

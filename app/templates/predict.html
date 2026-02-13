@@ -1,0 +1,252 @@
+{% extends 'base.html' %}
+{% block title %}Genetic Disorder Prediction{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="content-wrapper fade-in">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="display-4 fw-bold">
+                    <i class="fas fa-microscope"></i> Genetic Disorder Prediction
+                </h1>
+                <p class="lead text-muted">Enter genetic and clinical data for prediction</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-body p-4">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <!-- Gene Expression Values -->
+                    <h4 class="mb-3 text-primary">
+                        <i class="fas fa-dna"></i> Gene Expression Values
+                    </h4>
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <label class="form-label fw-semibold">Gene 1</label>
+                            <input type="number" name="gene_1" class="form-control" 
+                                   step="0.01" min="0" max="100" required
+                                   placeholder="0.00 - 100.00">
+                        </div>
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <label class="form-label fw-semibold">Gene 2</label>
+                            <input type="number" name="gene_2" class="form-control" 
+                                   step="0.01" min="0" max="100" required
+                                   placeholder="0.00 - 100.00">
+                        </div>
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <label class="form-label fw-semibold">Gene 3</label>
+                            <input type="number" name="gene_3" class="form-control" 
+                                   step="0.01" min="0" max="100" required
+                                   placeholder="0.00 - 100.00">
+                        </div>
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <label class="form-label fw-semibold">Gene 4</label>
+                            <input type="number" name="gene_4" class="form-control" 
+                                   step="0.01" min="0" max="100" required
+                                   placeholder="0.00 - 100.00">
+                        </div>
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <label class="form-label fw-semibold">Gene 5</label>
+                            <input type="number" name="gene_5" class="form-control" 
+                                   step="0.01" min="0" max="100" required
+                                   placeholder="0.00 - 100.00">
+                        </div>
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <label class="form-label fw-semibold">Gene 6</label>
+                            <input type="number" name="gene_6" class="form-control" 
+                                   step="0.01" min="0" max="100" required
+                                   placeholder="0.00 - 100.00">
+                        </div>
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <label class="form-label fw-semibold">Gene 7</label>
+                            <input type="number" name="gene_7" class="form-control" 
+                                   step="0.01" min="0" max="100" required
+                                   placeholder="0.00 - 100.00">
+                        </div>
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <label class="form-label fw-semibold">Gene 8</label>
+                            <input type="number" name="gene_8" class="form-control" 
+                                   step="0.01" min="0" max="100" required
+                                   placeholder="0.00 - 100.00">
+                        </div>
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <label class="form-label fw-semibold">Gene 9</label>
+                            <input type="number" name="gene_9" class="form-control" 
+                                   step="0.01" min="0" max="100" required
+                                   placeholder="0.00 - 100.00">
+                        </div>
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <label class="form-label fw-semibold">Gene 10</label>
+                            <input type="number" name="gene_10" class="form-control" 
+                                   step="0.01" min="0" max="100" required
+                                   placeholder="0.00 - 100.00">
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <!-- SNP Values -->
+                    <h4 class="mb-3 text-success">
+                        <i class="fas fa-project-diagram"></i> Single Nucleotide Polymorphisms (SNPs)
+                    </h4>
+                    <div class="row">
+                        <div class="col-md-6 col-lg-2 mb-3">
+                            <label class="form-label fw-semibold">SNP 1</label>
+                            <select name="snp_1" class="form-select" required>
+                                <option value="">Select...</option>
+                                <option value="0">0 (Absent)</option>
+                                <option value="1">1 (Present)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 col-lg-2 mb-3">
+                            <label class="form-label fw-semibold">SNP 2</label>
+                            <select name="snp_2" class="form-select" required>
+                                <option value="">Select...</option>
+                                <option value="0">0 (Absent)</option>
+                                <option value="1">1 (Present)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 col-lg-2 mb-3">
+                            <label class="form-label fw-semibold">SNP 3</label>
+                            <select name="snp_3" class="form-select" required>
+                                <option value="">Select...</option>
+                                <option value="0">0 (Absent)</option>
+                                <option value="1">1 (Present)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 col-lg-2 mb-3">
+                            <label class="form-label fw-semibold">SNP 4</label>
+                            <select name="snp_4" class="form-select" required>
+                                <option value="">Select...</option>
+                                <option value="0">0 (Absent)</option>
+                                <option value="1">1 (Present)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 col-lg-2 mb-3">
+                            <label class="form-label fw-semibold">SNP 5</label>
+                            <select name="snp_5" class="form-select" required>
+                                <option value="">Select...</option>
+                                <option value="0">0 (Absent)</option>
+                                <option value="1">1 (Present)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <!-- Clinical Data -->
+                    <h4 class="mb-3 text-warning">
+                        <i class="fas fa-user-md"></i> Clinical & Demographic Data
+                    </h4>
+                    <div class="row">
+                        <div class="col-md-6 col-lg-3 mb-3">
+                            <label class="form-label fw-semibold">Age (years)</label>
+                            <input type="number" name="age" class="form-control" 
+                                   min="0" max="120" required
+                                   placeholder="e.g., 45">
+                        </div>
+                        
+                        <div class="col-md-6 col-lg-3 mb-3">
+                            <label class="form-label fw-semibold">BMI (Body Mass Index)</label>
+                            <input type="number" name="bmi" class="form-control" 
+                                   step="0.1" min="10" max="50" required
+                                   placeholder="e.g., 25.5">
+                        </div>
+                        
+                        <div class="col-md-6 col-lg-3 mb-3">
+                            <label class="form-label fw-semibold">Smoking Status</label>
+                            <select name="smoking_status" class="form-select" required>
+                                <option value="">Select...</option>
+                                <option value="0">Non-Smoker</option>
+                                <option value="1">Smoker</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6 col-lg-3 mb-3">
+                            <label class="form-label fw-semibold">Protein Similarity Index</label>
+                            <input type="number" name="protein_similarity" class="form-control" 
+                                   step="0.001" min="0" max="1" required
+                                   placeholder="0.000 - 1.000">
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <button type="submit" class="btn btn-primary btn-lg px-5">
+                                <i class="fas fa-chart-line"></i> Predict with All Models
+                            </button>
+                            <button type="reset" class="btn btn-outline-secondary btn-lg px-5 ms-3">
+                                <i class="fas fa-redo"></i> Reset Form
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Help Section -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="fas fa-info-circle"></i> Input Guidelines</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="fw-bold">Gene Expression Values (gene_1 to gene_10):</h6>
+                                <p>Continuous values representing gene expression levels. Typical range: 0-100.</p>
+                                
+                                <h6 class="fw-bold mt-3">SNPs (snp_1 to snp_5):</h6>
+                                <p>Binary values indicating presence (1) or absence (0) of genetic variants.</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="fw-bold">Clinical Parameters:</h6>
+                                <ul>
+                                    <li><strong>Age:</strong> Patient's age in years</li>
+                                    <li><strong>BMI:</strong> Body Mass Index (weight/height²)</li>
+                                    <li><strong>Smoking Status:</strong> Non-smoker (0) or Smoker (1)</li>
+                                    <li><strong>Protein Similarity:</strong> Similarity index between 0-1</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Form validation and auto-fill sample data
+function fillSampleData() {
+    // Sample genetic data
+    const sampleData = {
+        gene_1: 45.5, gene_2: 62.3, gene_3: 78.1, gene_4: 34.7, gene_5: 56.2,
+        gene_6: 89.4, gene_7: 23.8, gene_8: 67.5, gene_9: 41.2, gene_10: 74.6,
+        snp_1: 1, snp_2: 0, snp_3: 1, snp_4: 1, snp_5: 0,
+        age: 45, bmi: 25.5, smoking_status: 0, protein_similarity: 0.85
+    };
+    
+    for (let [key, value] of Object.entries(sampleData)) {
+        const input = document.querySelector(`[name="${key}"]`);
+        if (input) input.value = value;
+    }
+}
+
+// Add sample data button
+window.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const sampleBtn = document.createElement('button');
+    sampleBtn.type = 'button';
+    sampleBtn.className = 'btn btn-outline-info btn-sm mb-3';
+    sampleBtn.innerHTML = '<i class="fas fa-flask"></i> Load Sample Data';
+    sampleBtn.onclick = fillSampleData;
+    form.insertBefore(sampleBtn, form.firstChild);
+});
+</script>
+{% endblock %}

@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard - Genetic Disorder Prediction{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="content-wrapper fade-in">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="display-4 fw-bold">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </h1>
+                <p class="lead text-muted">Welcome back, {{ user.username }}!</p>
+            </div>
+        </div>
+        
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <i class="fas fa-microscope fa-3x mb-2"></i>
+                    <h3>{{ total_predictions }}</h3>
+                    <p>Total Predictions</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card" style="background: linear-gradient(135deg, #50C878 0%, #3CB371 100%);">
+                    <i class="fas fa-brain fa-3x mb-2"></i>
+                    <h3>{{ model_performances|length }}</h3>
+                    <p>AI Models Available</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card" style="background: linear-gradient(135deg, #FFA500 0%, #FF8C00 100%);">
+                    <i class="fas fa-chart-line fa-3x mb-2"></i>
+                    <h3>{% if model_performances %}{{ model_performances.0.accuracy|floatformat:1 }}%{% else %}N/A{% endif %}</h3>
+                    <p>Best Model Accuracy</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="row">
+            <!-- Quick Actions -->
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-bolt"></i> Quick Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <a href="{% url 'predict' %}" class="btn btn-primary w-100 mb-3">
+                            <i class="fas fa-microscope"></i> New Prediction
+                        </a>
+                        <a href="{% url 'prediction_history' %}" class="btn btn-outline-primary w-100 mb-3">
+                            <i class="fas fa-history"></i> View History
+                        </a>
+                        <a href="{% url 'model_comparison' %}" class="btn btn-outline-success w-100 mb-3">
+                            <i class="fas fa-chart-bar"></i> Model Comparison
+                        </a>
+                        <a href="{% url 'data_preprocessing' %}" class="btn btn-outline-info w-100">
+                            <i class="fas fa-database"></i> Data Preprocessing
+                        </a>
+                    </div>
+                </div>
+                
+                {% if user.is_staff %}
+                <!-- Admin Panel -->
+                <div class="card mb-4">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="mb-0"><i class="fas fa-user-shield"></i> Admin Panel</h5>
+                    </div>
+                    <div class="card-body">
+                        <a href="{% url 'admin_dashboard' %}" class="btn btn-danger w-100 mb-2">
+                            <i class="fas fa-tachometer-alt"></i> Admin Dashboard
+                        </a>
+                        <a href="{% url 'user_management' %}" class="btn btn-outline-danger w-100 mb-2">
+                            <i class="fas fa-users"></i> User Management
+                        </a>
+                        <a href="{% url 'user_activity' %}" class="btn btn-outline-danger w-100">
+                            <i class="fas fa-list"></i> Activity Logs
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            
+            <!-- Top Models -->
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="fas fa-trophy"></i> Top Performing Models</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if model_performances %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Model</th>
+                                        <th>Accuracy</th>
+                                        <th>Precision</th>
+                                        <th>F1-Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for model in model_performances|slice:":5" %}
+                                    <tr>
+                                        <td>
+                                            {% if forloop.counter == 1 %}
+                                            <span class="badge bg-warning"><i class="fas fa-crown"></i> #{{ forloop.counter }}</span>
+                                            {% else %}
+                                            <span class="badge bg-secondary">#{{ forloop.counter }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td><strong>{{ model.model_name }}</strong></td>
+                                        <td>
+                                            <span class="model-accuracy-badge {% if model.accuracy >= 95 %}accuracy-high{% elif model.accuracy >= 85 %}accuracy-medium{% else %}accuracy-low{% endif %}">
+                                                {{ model.accuracy|floatformat:2 }}%
+                                            </span>
+                                        </td>
+                                        <td>{{ model.precision|floatformat:2 }}%</td>
+                                        <td>{{ model.f1_score|floatformat:2 }}%</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> No models trained yet. Please run the training script first.
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Recent Predictions -->
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="fas fa-history"></i> Recent Predictions</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if recent_predictions %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Model</th>
+                                        <th>Result</th>
+                                        <th>Confidence</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for prediction in recent_predictions %}
+                                    <tr>
+                                        <td>{{ prediction.created_at|date:"M d, Y H:i" }}</td>
+                                        <td>{{ prediction.model_used }}</td>
+                                        <td>
+                                            {% if prediction.predicted_result == 1 %}
+                                            <span class="badge bg-danger">Positive</span>
+                                            {% else %}
+                                            <span class="badge bg-success">Negative</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ prediction.prediction_confidence|floatformat:1 }}%</td>
+                                        <td>
+                                            <a href="{% url 'generate_report' prediction.id %}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-file-alt"></i> Report
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> No predictions yet. Start by making your first prediction!
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

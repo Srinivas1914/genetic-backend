@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% block title %}Prediction Report - Genetic Disorder Prediction{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="content-wrapper fade-in">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="display-4 fw-bold">
+                    <i class="fas fa-file-alt"></i> Prediction Report
+                </h1>
+                <p class="lead text-muted">Detailed analysis and report</p>
+            </div>
+        </div>
+        
+        <!-- Report Header -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Report Details</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Report ID:</strong> #{{ prediction.id }}</p>
+                        <p><strong>Patient:</strong> {{ prediction.user.get_full_name|default:prediction.user.username }}</p>
+                        <p><strong>Date:</strong> {{ prediction.created_at|date:"F d, Y" }}</p>
+                        <p><strong>Time:</strong> {{ prediction.created_at|date:"h:i A" }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Model Used:</strong> {{ prediction.model_used }}</p>
+                        <p><strong>Prediction Result:</strong> 
+                            {% if prediction.predicted_result == 1 %}
+                            <span class="badge bg-danger">POSITIVE</span>
+                            {% else %}
+                            <span class="badge bg-success">NEGATIVE</span>
+                            {% endif %}
+                        </p>
+                        <p><strong>Confidence Level:</strong> {{ prediction.prediction_confidence|floatformat:2 }}%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Prediction Result -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-{% if prediction.predicted_result == 1 %}danger{% else %}success{% endif %}" style="border-width: 3px;">
+                    <div class="card-body text-center p-5">
+                        <i class="fas {% if prediction.predicted_result == 1 %}fa-exclamation-triangle text-danger{% else %}fa-check-circle text-success{% endif %}" 
+                           style="font-size: 5rem;"></i>
+                        <h2 class="mt-4 mb-3">
+                            {% if prediction.predicted_result == 1 %}
+                            <span class="text-danger">POSITIVE for Genetic Disorder</span>
+                            {% else %}
+                            <span class="text-success">NEGATIVE for Genetic Disorder</span>
+                            {% endif %}
+                        </h2>
+                        <div class="progress mx-auto" style="height: 40px; max-width: 500px;">
+                            <div class="progress-bar {% if prediction.predicted_result == 1 %}bg-danger{% else %}bg-success{% endif %}" 
+                                 style="width: {{ prediction.prediction_confidence }}%;">
+                                <strong>{{ prediction.prediction_confidence|floatformat:1 }}% Confidence</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Genetic Data -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="fas fa-dna"></i> Gene Expression Data</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr><td><strong>Gene 1:</strong></td><td>{{ prediction.gene_1 }}</td></tr>
+                                <tr><td><strong>Gene 2:</strong></td><td>{{ prediction.gene_2 }}</td></tr>
+                                <tr><td><strong>Gene 3:</strong></td><td>{{ prediction.gene_3 }}</td></tr>
+                                <tr><td><strong>Gene 4:</strong></td><td>{{ prediction.gene_4 }}</td></tr>
+                                <tr><td><strong>Gene 5:</strong></td><td>{{ prediction.gene_5 }}</td></tr>
+                                <tr><td><strong>Gene 6:</strong></td><td>{{ prediction.gene_6 }}</td></tr>
+                                <tr><td><strong>Gene 7:</strong></td><td>{{ prediction.gene_7 }}</td></tr>
+                                <tr><td><strong>Gene 8:</strong></td><td>{{ prediction.gene_8 }}</td></tr>
+                                <tr><td><strong>Gene 9:</strong></td><td>{{ prediction.gene_9 }}</td></tr>
+                                <tr><td><strong>Gene 10:</strong></td><td>{{ prediction.gene_10 }}</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="fas fa-project-diagram"></i> SNP & Clinical Data</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr><td><strong>SNP 1:</strong></td><td>{{ prediction.snp_1 }}</td></tr>
+                                <tr><td><strong>SNP 2:</strong></td><td>{{ prediction.snp_2 }}</td></tr>
+                                <tr><td><strong>SNP 3:</strong></td><td>{{ prediction.snp_3 }}</td></tr>
+                                <tr><td><strong>SNP 4:</strong></td><td>{{ prediction.snp_4 }}</td></tr>
+                                <tr><td><strong>SNP 5:</strong></td><td>{{ prediction.snp_5 }}</td></tr>
+                                <tr><td><strong>Age:</strong></td><td>{{ prediction.age }} years</td></tr>
+                                <tr><td><strong>BMI:</strong></td><td>{{ prediction.bmi }}</td></tr>
+                                <tr><td><strong>Smoking Status:</strong></td>
+                                    <td>{% if prediction.smoking_status == 1 %}Smoker{% else %}Non-Smoker{% endif %}</td>
+                                </tr>
+                                <tr><td><strong>Protein Similarity:</strong></td><td>{{ prediction.protein_similarity }}</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Actions -->
+        <div class="row">
+            <div class="col-12 text-center">
+                <button onclick="window.print()" class="btn btn-primary btn-lg px-5 me-3">
+                    <i class="fas fa-print"></i> Print Report
+                </button>
+                <a href="{% url 'prediction_history' %}" class="btn btn-outline-secondary btn-lg px-5">
+                    <i class="fas fa-arrow-left"></i> Back to History
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+@media print {
+    .navbar, .footer, .btn { display: none !important; }
+    .content-wrapper { background: white; }
+}
+</style>
+{% endblock %}
