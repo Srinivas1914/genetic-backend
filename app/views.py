@@ -201,13 +201,7 @@ def predict_view(request):
                     print(f"Error with {model_name}: {e}")
             
             # Load deep learning models
-            from tensorflow import keras
-            
-            dl_models = {
-                'Neural Network': 'neural_network.h5',
-                'CNN': 'cnn.h5',
-                'RNN-LSTM': 'rnn_lstm.h5',
-            }
+           
             
             for model_name, file_name in dl_models.items():
                 try:
