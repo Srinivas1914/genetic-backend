@@ -2,9 +2,6 @@ django
 numpy
 pandas
 scikit-learn
-matplotlib
-seaborn
-Pillow
 django-environ
 matplotlib==3.7.2
 seaborn==0.12.2
